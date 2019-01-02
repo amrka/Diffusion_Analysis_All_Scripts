@@ -1,5 +1,5 @@
 # Diffusion_Analysis_All_Scripts
-These are the scripts I used to analyze dti dat acquired in oct_2017
+<font color=red>These are the scripts I used to analyze dti dat acquired in oct_2017</font>
 
 After converting raw 2dseq to nifti, I rotated the images and augmented them to look right upon visulization.
 
