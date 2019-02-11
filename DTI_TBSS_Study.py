@@ -33,18 +33,21 @@ MatlabCommand.set_default_matlab_cmd("matlab -nodesktop -nosplash")
 # In[2]:
 
 experiment_dir = '/media/amr/Amr_4TB/Work/October_Acquistion/Diffusion_TBSS_Stat' 
-
 map_list=  [    'CHARMED_AD' ,'CHARMED_FA'  ,'CHARMED_FR' , 'CHARMED_IAD', 'CHARMED_MD',  'CHARMED_RD',
 
 
-                'Diffusion_20_AD' , 'Diffusion_20_FA',  'Diffusion_20_MD' , 'Diffusion_20_RD',
+                 'Diffusion_20_AD' , 'Diffusion_20_FA',  'Diffusion_20_MD' , 'Diffusion_20_RD',
 
-                'Kurtosis_AD' , 'Kurtosis_AWF' , 'Kurtosis_MD' , 'Kurtosis_RD' , 'Kurtosis_TORT',
-                'Kurtosis_AK' , 'Kurtosis_FA' ,  'Kurtosis_MK' , 'Kurtosis_RK',
+                 'Kurtosis_AD' , 'Kurtosis_AWF' , 'Kurtosis_MD' , 'Kurtosis_RD' , 'Kurtosis_TORT',
+                 'Kurtosis_AK' , 'Kurtosis_FA'  , 'Kurtosis_MK' , 'Kurtosis_RK' ,
+
+                 'Kurtosis_E_DTI_AD'  ,  'Kurtosis_E_DTI_FA' , 'Kurtosis_E_DTI_MK' , 'Kurtosis_E_DTI_TORT',
+                 'Kurtosis_E_DTI_AK'  ,  'Kurtosis_E_DTI_KA' , 'Kurtosis_E_DTI_RD' ,
+                 'Kurtosis_E_DTI_AWF' ,  'Kurtosis_E_DTI_MD' , 'Kurtosis_E_DTI_RK' ,
 
 
-                'NODDI_FICVF' , 'NODDI_ODI'
-]
+                 'NODDI_FICVF' , 'NODDI_ODI'
+ ]
 
 
 # map_list = ['229', '230', '365', '274']
