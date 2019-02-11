@@ -1,5 +1,5 @@
 #!/bin/bash
-#Creates directory for TBSS of Diffusion_20, Kurtosis, CHARMED, NODDI
+#Creates directory for TBSS of Diffusion_20, Kurtosis, CHARMED, NODDI, Kurtosis_Explore_DTI
 
 #Do not put spaces after ,
 cd /media/amr/Amr_4TB/Work/October_Acquistion
