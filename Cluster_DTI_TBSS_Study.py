@@ -31,6 +31,7 @@ import matplotlib.pyplot as plt
 
 experiment_dir = '/home/in/aeed/TBSS' 
 
+
 map_list=  [    'CHARMED_AD' ,'CHARMED_FA'  ,'CHARMED_FR' , 'CHARMED_IAD', 'CHARMED_MD',  'CHARMED_RD',
 
 
@@ -46,6 +47,7 @@ map_list=  [    'CHARMED_AD' ,'CHARMED_FA'  ,'CHARMED_FR' , 'CHARMED_IAD', 'CHAR
 
                  'NODDI_FICVF' , 'NODDI_ODI'
  ]
+
 
 # map_list = ['229', '230', '365', '274']
 
@@ -79,7 +81,8 @@ templates = {
              'skeleton_mask'            : 'Study_Based_Template/*/{map_id}/mean_FA_skeleton_mask.nii.gz',
 
              'all_image'                : 'Study_Based_Template/*/{map_id}/All_{map_id}_Study.nii.gz',
-             'image_mask'               : 'Study_Based_Template/*/{map_id}/mean_FA_mask.nii.gz',
+#             'image_mask'               : 'Study_Based_Template/*/{map_id}/mean_FA_mask.nii.gz',
+	     'mean_FA'               : 'Study_Based_Template/*/{map_id}/mean_FA.nii.gz',
 
  }
 
@@ -123,8 +126,10 @@ def nilearn_smoothing(image):
 
     import numpy as np
     import os
+    kernel = [4,4,8]
 
-    kernel = [4.3,4.3,16]
+    #kernel = [4.3,4.3,16]
+    
 
 
 
@@ -140,6 +145,19 @@ nilearn_smoothing = Node(name = 'nilearn_smoothing',
                   interface = Function(input_names = ['image'],
                                output_names = ['smoothed_output'],
                   function = nilearn_smoothing))
+
+
+#-----------------------------------------------------------------------------------------------------
+#mask only FA values > 0.2 to gurantee it is WM
+thresh_FA = Node(fsl.Threshold(), name = 'thresh_FA')
+thresh_FA.inputs.thresh = 0.2	
+
+
+#-----------------------------------------------------------------------------------------------------
+#binarize this mask
+binarize_FA = Node(fsl.UnaryMaths(), name = 'binarize_FA')
+binarize_FA.inputs.operation = 'bin'
+binarize_FA.inputs.output_datatype = 'char'
 
 
 #-----------------------------------------------------------------------------------------------------
@@ -164,7 +182,10 @@ DTI_TBSS_Study.connect ([
       (selectfiles, nilearn_smoothing, [('all_image','image')]),
 
       (nilearn_smoothing, randomise_VBA, [('smoothed_output','in_file')]),
-      (selectfiles, randomise_VBA, [('image_mask','mask')])
+     
+     (selectfiles, thresh_FA, [('mean_FA','in_file')]),
+     (thresh_FA, binarize_FA, [('out_file','in_file')]), 
+     (binarize_FA, randomise_VBA, [('out_file','mask')])
 
 
 
@@ -173,5 +194,5 @@ DTI_TBSS_Study.connect ([
 
 
 DTI_TBSS_Study.write_graph(graph2use='flat')
-DTI_TBSS_Study.run(plugin='SLURMGraph', plugin_args = {'dont_resubmit_completed_jobs':True})
+DTI_TBSS_Study.run(plugin='SLURM')
 # DTI_workflow.run(plugin='SLURM')
