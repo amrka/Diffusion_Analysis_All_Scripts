@@ -78,7 +78,7 @@ templates = {
              'skeleton_mask'            : 'Waxholm_Template/*/{map_id}/mean_FA_skeleton_mask.nii.gz',
 
              'all_image'                : 'Waxholm_Template/*/{map_id}/All_{map_id}_WAX.nii.gz',
-             'image_mask'               : 'Waxholm_Template/*/{map_id}/mean_FA_mask.nii.gz',
+             'mean_FA'               : 'Waxholm_Template/*/{map_id}/mean_FA.nii.gz',
 
  }
 
@@ -142,6 +142,20 @@ nilearn_smoothing = Node(name = 'nilearn_smoothing',
 
 
 #-----------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------
+#mask only FA values > 0.2 to gurantee it is WM
+thresh_FA = Node(fsl.Threshold(), name = 'thresh_FA')
+thresh_FA.inputs.thresh = 0.2 
+
+
+#-----------------------------------------------------------------------------------------------------
+#binarize this mask
+binarize_FA = Node(fsl.UnaryMaths(), name = 'binarize_FA')
+binarize_FA.inputs.operation = 'bin'
+binarize_FA.inputs.output_datatype = 'char'
+
+
+#-----------------------------------------------------------------------------------------------------
 #randomise on the smoothed all images
 randomise_VBA = Node(fsl.Randomise(), name = 'randomise_vba')
 randomise_VBA.inputs.design_mat = design
@@ -163,7 +177,10 @@ DTI_TBSS_Wax.connect ([
       (selectfiles, nilearn_smoothing, [('all_image','image')]),
 
       (nilearn_smoothing, randomise_VBA, [('smoothed_output','in_file')]),
-      (selectfiles, randomise_VBA, [('image_mask','mask')])
+     
+     (selectfiles, thresh_FA, [('mean_FA','in_file')]),
+     (thresh_FA, binarize_FA, [('out_file','in_file')]), 
+     (binarize_FA, randomise_VBA, [('out_file','mask')])
 
 
 
@@ -172,5 +189,5 @@ DTI_TBSS_Wax.connect ([
 
 
 DTI_TBSS_Wax.write_graph(graph2use='flat')
-DTI_TBSS_Wax.run(plugin='SLURMGraph', plugin_args = {'dont_resubmit_completed_jobs':True})
+DTI_TBSS_Wax.run(plugin='SLURM')
 # DTI_workflow.run(plugin='SLURM')
